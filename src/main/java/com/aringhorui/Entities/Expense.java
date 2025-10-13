@@ -12,7 +12,7 @@ public class Expense {
     private Long id;
 
     @Column(name = "user_email", nullable = false)
-    private String userEmail;  // simple text field
+    private String userEmail;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -23,13 +23,22 @@ public class Expense {
     @Column(nullable = false)
     private String category;
 
-    @Column(nullable = false)
+    @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 
+    @Column(name = "bank_account")
     private String bankAccount;
+
+    @Column(name = "expense_type", nullable = false)  // FIXED: Added nullable = false
     private String expenseType;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     private String location;
+
+    // Constructors
+    public Expense() {}
 
     // Getters and setters
     public Long getId() { return id; }

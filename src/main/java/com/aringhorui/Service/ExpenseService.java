@@ -3,14 +3,12 @@ package com.aringhorui.Service;
 import com.aringhorui.Controller.ExpenseController.ExpenseRequest;
 import com.aringhorui.Entities.Expense;
 import com.aringhorui.Repositories.ExpenseRepository;
-import org.gradle.internal.impldep.org.testng.annotations.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;     // already needed for List<Expense>
-
 
 import java.time.LocalDate;
-
+import java.util.List;
+import java.util.Optional;  // CORRECTED: Use java.util.Optional
 
 @Service
 public class ExpenseService {
@@ -18,20 +16,21 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
+
     // -------------------------
     // Log a new expense
     // -------------------------
     public Expense logExpense(Expense expense, String userEmail) {
-        // Set the userEmail on the expense
         expense.setUserEmail(userEmail);
-        // Save expense
         return expenseRepository.save(expense);
     }
 
+    // -------------------------
+    // Get expense by ID
+    // -------------------------
     public Optional<Expense> getExpenseById(Long id) {
         return expenseRepository.findById(id);
     }
-
 
     // -------------------------
     // Get expenses for a user with optional filters and date range
@@ -44,7 +43,6 @@ public class ExpenseService {
             String paymentMethod,
             String expenseType
     ) {
-        // Default to current month if no date range provided
         if (startDate == null || endDate == null) {
             LocalDate now = LocalDate.now();
             startDate = now.withDayOfMonth(1);
@@ -93,4 +91,6 @@ public class ExpenseService {
 
         return expenseRepository.save(expense);
     }
+
+
 }
