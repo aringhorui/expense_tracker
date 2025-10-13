@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log Expense | Expense Tracker</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f6f8;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+        .container {
+          background: white;
+          padding: 20px 30px;
+          border-radius: 10px;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          width: 400px;
+          max-width: 100%;
+        }
+        h2 { text-align: center; margin-bottom: 20px; }
+        input, select {
+          width: 100%;
+          padding: 8px;
+          margin: 6px 0;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+        }
+        button {
+          width: 100%;
+          padding: 10px;
+          background-color: #007bff;
+          border: none;
+          color: white;
+          font-size: 16px;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-top: 10px;
+        }
+        button:hover { background-color: #0056b3; }
+        #message { text-align: center; margin-top: 15px; font-weight: bold; }
+        .small-btn { background-color: #6c757d; margin-top: 5px; }
+        .small-btn:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="pageTitle">Log Expense</h2>
+
+    <input type="date" id="date" required />
+    <input type="number" id="amount" placeholder="Amount" step="0.01" required />
+
+    <select id="category" required>
+        <option value="">Select Category</option>
+        <option value="Rent/Housing">Rent/Housing</option>
+        <option value="Medical">Medical</option>
+        <option value="Fitness">Fitness</option>
+        <option value="Loans/Debt">Loans/Debt</option>
+        <option value="Food">Food</option>
+        <option value="Beverages">Beverages</option>
+        <option value="Dine Out">Dine Out</option>
+        <option value="Groceries">Groceries</option>
+        <option value="Travel">Travel</option>
+        <option value="Fuel">Fuel</option>
+        <option value="Investing">Investing</option>
+        <option value="Education">Education</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Personal Care">Personal Care</option>
+        <option value="Clothing/Footwear">Clothing/Footwear</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Alcohol">Alcohol</option>
+        <option value="Cigarettes">Cigarettes</option>
+        <option value="Gifts/Donations">Gifts/Donations</option>
+        <option value="Taxes">Taxes</option>
+        <option value="Subscriptions">Subscriptions</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Insurance">Insurance</option>
+        <option value="Others">Others</option>
+    </select>
+
+    <select id="paymentMethod" required>
+        <option value="">Select Payment Method</option>
+        <option value="Cash">Cash</option>
+        <option value="Credit Card">Credit Card</option>
+        <option value="Debit Card">Debit Card</option>
+        <option value="UPI">UPI</option>
+        <option value="Net Banking">Net Banking</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <input type="text" id="bankAccount" placeholder="Bank Account (optional)" />
+
+    <select id="expenseType" required>
+        <option value="">Select Expense Type</option>
+        <option value="Needs">Needs</option>
+        <option value="Wants">Wants</option>
+        <option value="Investments">Investments</option>
+    </select>
+
+    <input type="text" id="description" placeholder="Description" />
+    <input type="text" id="location" placeholder="Location" />
+
+    <button id="submitBtn" onclick="saveExpense()">Submit Expense</button>
+    <button class="small-btn" onclick="goHome()">Back to Home</button>
+    <div id="message"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('🔵 STEP 1: DOM Content Loaded - Script Started');
+        console.log('🔵 Current URL:', window.location.href);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const expenseId = urlParams.get('id');
+
+        console.log('🔵 STEP 2: Expense ID from URL parameter:', expenseId);
+        console.log('🔵 Expense ID type:', typeof expenseId);
+
+        // Update UI for edit mode
+        if (expenseId) {
+            console.log('🟡 STEP 3: Edit mode detected, updating UI...');
+            document.getElementById('pageTitle').textContent = 'Edit Expense';
+            document.getElementById('submitBtn').textContent = 'Update Expense';
+            document.title = 'Edit Expense | Expense Tracker';
+            console.log('✅ UI updated successfully');
+
+            // Fetch expense data from backend
+            const fetchUrl = `http://localhost:8080/api/expenses/${expenseId}`;
+            console.log('🟡 STEP 4: Fetching data from:', fetchUrl);
+
+            try {
+                const response = await fetch(fetchUrl);
+                console.log('🟡 STEP 5: Response received');
+                console.log('   - Status:', response.status);
+                console.log('   - Status Text:', response.statusText);
+                console.log('   - OK:', response.ok);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const expense = await response.json();
+                console.log('✅ STEP 6: Expense data parsed as JSON');
+                console.log('   - Full expense object:', expense);
+                console.log('   - Object keys:', Object.keys(expense));
+
+                // Log each field value from API
+                console.log('\n📋 FIELD VALUES FROM API:');
+                console.log('   - amount:', expense.amount);
+                console.log('   - category:', expense.category);
+                console.log('   - paymentMethod:', expense.paymentMethod);
+                console.log('   - bankAccount:', expense.bankAccount);
+                console.log('   - expenseType:', expense.expenseType);
+                console.log('   - description:', expense.description);
+                console.log('   - location:', expense.location);
+                console.log('   - date:', expense.date);
+
+                console.log('\n🔧 STEP 7: Attempting to fill form fields...');
+
+                // Fill text/number/date inputs
+                ['amount', 'bankAccount', 'description', 'location', 'date'].forEach(fieldId => {
+                    const element = document.getElementById(fieldId);
+                    const value = expense[fieldId] || '';
+
+                    if (element) {
+                        console.log(`   ✅ Setting ${fieldId}: "${value}"`);
+                        element.value = value;
+                        console.log(`      - Verified: "${element.value}"`);
+                    } else {
+                        console.error(`   ❌ Element NOT found: ${fieldId}`);
+                    }
+                });
+
+                console.log('\n🔧 STEP 8: Attempting to fill select dropdowns...');
+
+                // Fill select inputs
+                ['category', 'paymentMethod', 'expenseType'].forEach(fieldId => {
+                    const element = document.getElementById(fieldId);
+                    const valueToSet = expense[fieldId];
+
+                    console.log(`\n   📌 Dropdown: ${fieldId}`);
+
+                    if (element && valueToSet) {
+                        const options = Array.from(element.options).map(opt => opt.value);
+                        console.log(`      - Available options:`, options);
+                        console.log(`      - Value to set:`, valueToSet);
+
+                        const optionExists = options.includes(valueToSet);
+                        console.log(`      - Option exists:`, optionExists);
+
+                        if (optionExists) {
+                            element.value = valueToSet;
+                            console.log(`      - Set to: "${element.value}"`);
+                        } else {
+                            console.warn(`      ⚠️ Value "${valueToSet}" not in options`);
+                        }
+                    } else {
+                        if (!element) console.error(`      ❌ Element NOT found`);
+                        if (!valueToSet) console.warn(`      ⚠️ No value from API`);
+                    }
+                });
+
+                console.log('\n✅ STEP 9: Form population completed');
+
+                // Final verification
+                console.log('\n🔍 FINAL VERIFICATION - Current form values:');
+                ['amount', 'category', 'paymentMethod', 'bankAccount', 'expenseType', 'description', 'location', 'date'].forEach(fieldId => {
+                    const element = document.getElementById(fieldId);
+                    console.log(`   - ${fieldId}: "${element ? element.value : 'NOT FOUND'}"`);
+                });
+
+            } catch (err) {
+                console.error('❌ FETCH ERROR:', err.message);
+                console.error('Full error:', err);
+                alert('⚠️ Failed to load expense data: ' + err.message);
+            }
+
+        } else {
+            console.log('🟢 New expense mode - auto-filling date');
+            const now = new Date();
+            document.getElementById("date").value = now.toISOString().split("T")[0];
+        }
+
+        // Save function
+        window.saveExpense = async function() {
+            const email = localStorage.getItem("email");
+            if (!email) {
+                alert("No logged-in user found!");
+                window.location.href = "UserLogin.html";
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (!amount || amount <= 0) {
+                alert("❌ Please enter a valid positive amount!");
+                return;
+            }
+
+            const expenseData = {
+                email,
+                amount,
+                category: document.getElementById("category").value,
+                paymentMethod: document.getElementById("paymentMethod").value,
+                bankAccount: document.getElementById("bankAccount").value,
+                expenseType: document.getElementById("expenseType").value,
+                description: document.getElementById("description").value,
+                location: document.getElementById("location").value,
+                date: document.getElementById("date").value
+            };
+
+            const requiredFields = ["category", "paymentMethod", "expenseType", "date"];
+            for (const field of requiredFields) {
+                if (!expenseData[field]) {
+                    alert(`❌ Please fill in the ${field} field!`);
+                    return;
+                }
+            }
+
+            const method = expenseId ? 'PUT' : 'POST';
+            const url = expenseId
+                ? `http://localhost:8080/api/expenses/${expenseId}`
+                : `http://localhost:8080/api/expenses/log`;
+
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(expenseData)
+                });
+
+                if (response.ok) {
+                    alert(`✅ Expense ${expenseId ? 'updated' : 'logged'} successfully!`);
+                    window.location.href = "Expenses.html";
+                } else {
+                    const errorText = await response.text();
+                    alert("❌ " + errorText);
+                }
+            } catch (error) {
+                console.error('❌ Network error:', error);
+                alert("⚠️ Could not connect to server.");
+            }
+        };
+
+        window.goHome = function() {
+            window.location.href = "Home.html";
+        };
+    });
+</script>
+
+</body>
+</html>

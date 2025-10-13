@@ -18,7 +18,7 @@
           color: #333;
         }
         button {
-          margin-top: 20px;
+          margin-top: 10px;
           padding: 10px 20px;
           font-size: 16px;
           cursor: pointer;
@@ -35,11 +35,20 @@
 <body>
 
 <h1 id="greeting"></h1>
+
+<!-- Button to go to Log Expense page -->
+<button onclick="goToLogExpense()">Log Expense</button>
+
+<!-- Button to view all Expenses -->
+<button onclick="goToExpenses()">View Expenses</button>
+
+<!-- Logout button -->
 <button onclick="logout()">Logout</button>
 
 <script>
     // Get the user's first name from localStorage
     const firstName = localStorage.getItem("firstName");
+    const email = localStorage.getItem("email");
 
     if (!firstName) {
       // If no user info, redirect to login page
@@ -50,7 +59,16 @@
 
     function logout() {
       localStorage.removeItem("firstName");
+      localStorage.removeItem("email");
       window.location.href = "UserLogin.html";
+    }
+
+    function goToLogExpense() {
+      window.location.href = "LogExpense.html";
+    }
+
+    function goToExpenses() {
+        window.location.href = "Expenses.html";
     }
 </script>
 

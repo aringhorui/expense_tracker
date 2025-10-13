@@ -101,6 +101,7 @@
             const result = await response.json();
             // Save first name in localStorage
             localStorage.setItem("firstName", result.firstName);
+            localStorage.setItem("email", result.email);
             // Redirect to home page
             window.location.href = "Home.html";
         } else {
