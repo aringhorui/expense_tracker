@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Expense Tracker</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f6f8;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          flex-direction: column;
+        }
+        h1 {
+          color: #333;
+        }
+        button {
+          margin-top: 20px;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+          border: none;
+          border-radius: 5px;
+          background-color: #007bff;
+          color: white;
+        }
+        button:hover {
+          background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1 id="greeting"></h1>
+<button onclick="logout()">Logout</button>
+
+<script>
+    // Get the user's first name from localStorage
+    const firstName = localStorage.getItem("firstName");
+
+    if (!firstName) {
+      // If no user info, redirect to login page
+      window.location.href = "UserLogin.html";
+    } else {
+      document.getElementById("greeting").textContent = `Welcome, ${firstName}!`;
+    }
+
+    function logout() {
+      localStorage.removeItem("firstName");
+      window.location.href = "UserLogin.html";
+    }
+</script>
+
+</body>
+</html>
