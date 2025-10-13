@@ -1,76 +1,583 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home | Expense Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f6f8;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        h1 {
-          color: #333;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .greeting-section h1 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .greeting-section p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
         button {
-          margin-top: 10px;
-          padding: 10px 20px;
-          font-size: 16px;
-          cursor: pointer;
-          border: none;
-          border-radius: 5px;
-          background-color: #007bff;
-          color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
-        button:hover {
-          background-color: #0056b3;
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-logout {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #ee3547;
+        }
+
+        /* Chart Card */
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .chart-header h2 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .chart-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .total-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 450px;
+        }
+
+        /* Filter Card */
+        .filter-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-card h3 {
+            color: #2d3748;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            color: #4a5568;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #cbd5e0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state h3 {
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .empty-state p {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .greeting-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .action-buttons button {
+                flex: 1;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
         }
     </style>
 </head>
 <body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="greeting-section">
+            <h1 id="greeting"></h1>
+            <p id="userEmail"></p>
+        </div>
+        <div class="action-buttons">
+            <button class="btn-primary" onclick="goToLogExpense()">➕ Log Expense</button>
+            <button class="btn-secondary" onclick="goToExpenses()">📊 View Expenses</button>
+            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
 
-<h1 id="greeting"></h1>
+    <!-- Chart -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h2>💰 Expense Trends</h2>
+            <span class="total-badge" id="totalExpense">₹0</span>
+        </div>
+        <div class="chart-container" id="chartWrapper">
+            <canvas id="expensesChart"></canvas>
+        </div>
+    </div>
 
-<!-- Button to go to Log Expense page -->
-<button onclick="goToLogExpense()">Log Expense</button>
-
-<!-- Button to view all Expenses -->
-<button onclick="goToExpenses()">View Expenses</button>
-
-<!-- Logout button -->
-<button onclick="logout()">Logout</button>
+    <!-- Filters (Below Chart) -->
+    <div class="filter-card">
+        <h3>📅 Filter & Customize View</h3>
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label for="startDate">From Date</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="filter-group">
+                <label for="endDate">To Date</label>
+                <input type="date" id="endDate">
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter">
+                        <option value="">📊 All Categories</option>
+                        <option value="Rent/Housing">🏠 Rent/Housing</option>
+                        <option value="Medical">🏥 Medical</option>
+                        <option value="Fitness">💪 Fitness</option>
+                        <option value="Loans/Debt">💳 Loans/Debt</option>
+                        <option value="Food">🍔 Food</option>
+                        <option value="Beverages">☕ Beverages</option>
+                        <option value="Dine Out">🍽️ Dine Out</option>
+                        <option value="Groceries">🛒 Groceries</option>
+                        <option value="Travel">✈️ Travel</option>
+                        <option value="Fuel">⛽ Fuel</option>
+                        <option value="Investing">📈 Investing</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Entertainment">🎬 Entertainment</option>
+                        <option value="Personal Care">💅 Personal Care</option>
+                        <option value="Clothing/Footwear">👕 Clothing/Footwear</option>
+                        <option value="Electronics">📱 Electronics</option>
+                        <option value="Alcohol">🍺 Alcohol</option>
+                        <option value="Cigarettes">🚬 Cigarettes</option>
+                        <option value="Gifts/Donations">🎁 Gifts/Donations</option>
+                        <option value="Taxes">🧾 Taxes</option>
+                        <option value="Subscriptions">📺 Subscriptions</option>
+                        <option value="Utilities">💡 Utilities</option>
+                        <option value="Insurance">🛡️ Insurance</option>
+                        <option value="Trips">🗺️ Trips</option>
+                        <option value="Others">📦 Others</option>
+                    </select>
+            </div>
+            <div class="filter-group">
+                <button class="btn-apply" onclick="updateChart()">Apply Filters</button>
+            </div>
+            <div class="filter-group">
+                <button class="btn-reset" onclick="resetFilters()">Reset to This Month</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Get the user's first name from localStorage
     const firstName = localStorage.getItem("firstName");
     const email = localStorage.getItem("email");
 
-    if (!firstName) {
-      // If no user info, redirect to login page
-      window.location.href = "UserLogin.html";
+    if (!firstName || !email) {
+        window.location.href = "UserLogin.html";
     } else {
-      document.getElementById("greeting").textContent = `Welcome, ${firstName}!`;
+        document.getElementById("greeting").textContent = `Welcome back, ${firstName}! 👋`;
+        document.getElementById("userEmail").textContent = email;
     }
 
+    // Button functionality
     function logout() {
-      localStorage.removeItem("firstName");
-      localStorage.removeItem("email");
-      window.location.href = "UserLogin.html";
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem("firstName");
+            localStorage.removeItem("email");
+            window.location.href = "UserLogin.html";
+        }
+    }
+    function goToLogExpense() { window.location.href = "LogExpense.html"; }
+    function goToExpenses() { window.location.href = "Expenses.html"; }
+
+    let chart;
+    const ctx = document.getElementById('expensesChart').getContext('2d');
+
+    // Get current month range
+    function getCurrentMonthRange() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), 1);
+        const end = now;
+
+        const format = d => {
+            const year = d.getFullYear();
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        return { startDate: format(start), endDate: format(end) };
     }
 
-    function goToLogExpense() {
-      window.location.href = "LogExpense.html";
+    // Format date for display
+    function formatDateForDisplay(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('en-IN', { month: 'short' });
+        return `${day} ${month}`;
     }
 
-    function goToExpenses() {
-        window.location.href = "Expenses.html";
+    // Fetch expenses
+    async function fetchExpenses(startDate = '', endDate = '', category = '') {
+        let url = `/api/expenses?email=${email}`;
+        if(startDate) url += `&startDate=${startDate}`;
+        if(endDate) url += `&endDate=${endDate}`;
+        if(category) url += `&category=${category}`;
+        const response = await fetch(url);
+        return await response.json();
+    }
+
+    // Draw chart
+    async function drawChart(data) {
+        data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const labels = [];
+        const cumulativeAmounts = [];
+        let total = 0;
+
+        data.forEach(e => {
+            labels.push(e.date);
+            total += e.amount;
+            cumulativeAmounts.push(total);
+        });
+
+        // Update total display
+        document.getElementById('totalExpense').textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        if (chart) chart.destroy();
+
+        const chartWrapper = document.getElementById('chartWrapper');
+
+        if (data.length === 0) {
+            chartWrapper.innerHTML = `
+                <div class="empty-state">
+                    <h3>No Expenses Found</h3>
+                    <p>Try adjusting your filters or add some expenses to get started.</p>
+                </div>
+            `;
+            return;
+        } else {
+            chartWrapper.innerHTML = '<canvas id="expensesChart"></canvas>';
+        }
+
+        const newCtx = document.getElementById('expensesChart').getContext('2d');
+
+        chart = new Chart(newCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Cumulative Expenses',
+                    data: cumulativeAmounts,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#667eea',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#764ba2',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 13,
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderColor: '#667eea',
+                        borderWidth: 1,
+                        titleFont: { size: 14, weight: '600' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            title: function(context) {
+                                const date = new Date(context[0].label);
+                                return date.toLocaleDateString('en-IN', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric'
+                                });
+                            },
+                            label: function(context) {
+                                return 'Total: ₹' + context.parsed.y.toLocaleString('en-IN', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            font: { size: 13, weight: '500' },
+                            color: '#4a5568'
+                        },
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#718096',
+                            autoSkip: true,
+                            autoSkipPadding: 20,
+                            maxRotation: 45,
+                            minRotation: 0,
+                            callback: function(value, index, ticks) {
+                                const date = this.getLabelForValue(value);
+                                return formatDateForDisplay(date);
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cumulative Amount (₹)',
+                            font: { size: 13, weight: '500' },
+                            color: '#4a5568'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#718096',
+                            callback: function(value) {
+                                return '₹' + value.toLocaleString('en-IN');
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+
+    // Reset filters to current month
+    function resetFilters() {
+        const { startDate, endDate } = getCurrentMonthRange();
+        document.getElementById('startDate').value = startDate;
+        document.getElementById('endDate').value = endDate;
+        document.getElementById('categoryFilter').value = '';
+        fetchExpenses(startDate, endDate).then(drawChart);
+    }
+
+    // Initial load - current month
+    const { startDate, endDate } = getCurrentMonthRange();
+    document.getElementById('startDate').value = startDate;
+    document.getElementById('endDate').value = endDate;
+    fetchExpenses(startDate, endDate).then(drawChart);
+
+    // Update chart with filters
+    function updateChart() {
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        const category = document.getElementById('categoryFilter').value;
+        fetchExpenses(start, end, category).then(drawChart);
     }
 </script>
-
 </body>
 </html>
