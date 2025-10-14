@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>View Incomes | Income Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card h3 {
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .filters-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filters-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-color: white;
+            padding-right: 36px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.005);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amount-cell {
+            font-weight: 700;
+            color: #10b981;
+            font-size: 15px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background: #fee;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .date-cell {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-section {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <h1>💰 Income Tracker</h1>
+            <div class="subtitle">Track and manage your income streams</div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-success" id="addIncomeBtn">
+                ➕ Add Income
+            </button>
+            <button class="btn-outline" id="homeBtn">
+                🏠 Home
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Message Alert -->
+        <div id="message"></div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Total Income</h3>
+                <div class="value" id="totalIncome">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <h3>Income Records</h3>
+                <div class="value" id="recordCount">0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Date Range</h3>
+                <div class="value" id="dateRange" style="font-size: 16px;">-</div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-header">
+                <h2>🔍 Filters & Sorting</h2>
+            </div>
+
+            <div class="filters-grid">
+                <!-- Income Type Dropdown -->
+                <div class="filter-group">
+                    <label>Income Category</label>
+                    <select id="filterType">
+                        <option value="">All Categories</option>
+                        <option value="Salary">💼 Salary</option>
+                        <option value="Bonus">🎁 Bonus</option>
+                        <option value="Investments">📈 Investments</option>
+                        <option value="Dividends">💹 Dividends</option>
+                        <option value="Interest">🏦 Interest</option>
+                        <option value="Rollover">🔄 Rollover</option>
+                        <option value="Business Income">🏢 Business Income</option>
+                        <option value="Freelance">💻 Freelance</option>
+                        <option value="Rental Income">🏠 Rental Income</option>
+                        <option value="Pension">👴 Pension</option>
+                        <option value="Commission">💵 Commission</option>
+                        <option value="Refund">↩️ Refund</option>
+                        <option value="Gift">🎁 Gift</option>
+                        <option value="Sale of Assets">🏷️ Sale of Assets</option>
+                        <option value="Other">📦 Other</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Description</label>
+                    <input type="text" id="filterDescription" placeholder="Search description...">
+                </div>
+                <div class="filter-group">
+                    <label>Start Date</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="filter-group">
+                    <label>End Date</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="filter-group">
+                    <label>Sort By Amount</label>
+                    <select id="sortOrder">
+                        <option value="desc">Highest First</option>
+                        <option value="asc">Lowest First</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-primary" id="filterBtn">
+                    ✓ Apply Filters
+                </button>
+                <button class="btn-secondary" id="clearBtn">
+                    ✕ Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-container">
+            <table id="incomeTable">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Amount (₹)</th>
+                    <th>Date Received</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="5">
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <p>Loading income data...</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const tableBody = document.querySelector('#incomeTable tbody');
+        const msg = document.getElementById('message');
+        const totalEl = document.getElementById('totalIncome');
+        const recordCountEl = document.getElementById('recordCount');
+        const dateRangeEl = document.getElementById('dateRange');
+
+        const email = localStorage.getItem("email");
+        if (!email) {
+            showMessage("⚠️ User email not found in localStorage.", 'error');
+            return;
+        }
+
+        const API_URL = '/api/income/list';
+        const filterType = document.getElementById('filterType');
+        const filterDescription = document.getElementById('filterDescription');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const sortOrder = document.getElementById('sortOrder');
+        const filterBtn = document.getElementById('filterBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const addIncomeBtn = document.getElementById('addIncomeBtn');
+        const homeBtn = document.getElementById('homeBtn');
+
+        // --- Format date for display ---
+        function formatDisplayDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = monthNames[date.getMonth()];
+            const year = String(date.getFullYear()).slice(-2);
+            return `${day} ${month} ${year}`;
+        }
+
+        // --- Set default date range with conditional logic ---
+        const today = new Date();
+        const lastDayCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        let start, end;
+
+        if (today.getDate() === lastDayCurrentMonth.getDate()) {
+            start = new Date(today);
+            const lastDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+            end = new Date(lastDayNextMonth);
+            end.setDate(end.getDate() - 1);
+        } else {
+            start = new Date(today.getFullYear(), today.getMonth(), 0);
+            end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            end.setDate(end.getDate() - 1);
+        }
+
+        function formatDate(d) {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        startDate.value = formatDate(start);
+        endDate.value = formatDate(end);
+
+        // Update date range display
+        function updateDateRangeDisplay() {
+            if (startDate.value && endDate.value) {
+                dateRangeEl.textContent = `${formatDisplayDate(startDate.value)} - ${formatDisplayDate(endDate.value)}`;
+            } else {
+                dateRangeEl.textContent = 'All Time';
+            }
+        }
+        updateDateRangeDisplay();
+
+        // --- Show message helper ---
+        function showMessage(text, type = 'error') {
+            msg.innerHTML = `<div class="alert alert-${type}">
+                ${type === 'error' ? '❌' : '✓'} ${text}
+            </div>`;
+            setTimeout(() => msg.innerHTML = '', 5000);
+        }
+
+        // --- Fetch and render incomes ---
+        async function loadIncomes() {
+            msg.innerHTML = '';
+            tableBody.innerHTML = `<tr><td colspan="5">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading income data...</p>
+                </div>
+            </td></tr>`;
+
+            const params = new URLSearchParams();
+            params.append('userEmail', email);
+            if (filterType.value) params.append('incomeType', filterType.value);
+            if (filterDescription.value.trim()) params.append('description', filterDescription.value.trim());
+            if (startDate.value) params.append('startDate', startDate.value);
+            if (endDate.value) params.append('endDate', endDate.value);
+            if (sortOrder.value) params.append('sortOrder', sortOrder.value);
+
+            try {
+                const resp = await fetch(`${API_URL}?${params.toString()}`);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+
+                if (!data.length) {
+                    tableBody.innerHTML = `<tr><td colspan="5">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <h3>No Income Records Found</h3>
+                            <p>Try adjusting your filters or add your first income entry.</p>
+                        </div>
+                    </td></tr>`;
+                    totalEl.textContent = '₹0.00';
+                    recordCountEl.textContent = '0';
+                    return;
+                }
+
+                tableBody.innerHTML = data.map(i => `
+                    <tr>
+                        <td><strong>${i.name || '-'}</strong></td>
+                        <td><span class="type-badge">${i.incomeType || '-'}</span></td>
+                        <td class="amount-cell">₹${i.amount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td class="date-cell">${formatDisplayDate(i.dateReceived)}</td>
+                        <td>${i.description || '-'}</td>
+                    </tr>
+                `).join('');
+
+                const total = data.reduce((sum, i) => sum + i.amount, 0);
+                totalEl.textContent = '₹' + total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                recordCountEl.textContent = data.length.toLocaleString('en-IN');
+
+            } catch (err) {
+                console.error(err);
+                showMessage('Failed to load incomes: ' + (err.message || 'Unknown error'), 'error');
+                tableBody.innerHTML = '';
+            }
+        }
+
+        // --- Clear filters ---
+        function clearFilters() {
+            filterType.value = '';
+            filterDescription.value = '';
+            startDate.value = formatDate(start);
+            endDate.value = formatDate(end);
+            sortOrder.value = 'desc';
+            updateDateRangeDisplay();
+            loadIncomes();
+        }
+
+        // Event listeners
+        filterBtn.addEventListener('click', () => {
+            updateDateRangeDisplay();
+            loadIncomes();
+        });
+
+        clearBtn.addEventListener('click', clearFilters);
+        addIncomeBtn.addEventListener('click', () => window.location.href = 'addincome.html');
+        homeBtn.addEventListener('click', () => window.location.href = 'Home.html');
+
+        // Allow Enter key to trigger filter
+        [filterDescription, startDate, endDate].forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    updateDateRangeDisplay();
+                    loadIncomes();
+                }
+            });
+        });
+
+        // Trigger filter on dropdown change
+        filterType.addEventListener('change', () => {
+            updateDateRangeDisplay();
+            loadIncomes();
+        });
+
+        // Initial load
+        loadIncomes();
+    })();
+</script>
+
+</body>
+</html>

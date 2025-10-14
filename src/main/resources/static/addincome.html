@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Add Income | Income Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 550px;
+            overflow: hidden;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .form-header-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .form-body {
+            padding: 32px;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding: 0 8px;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .required::after {
+            content: "*";
+            color: #dc3545;
+            margin-left: 2px;
+        }
+
+        .field-wrapper {
+            position: relative;
+        }
+
+        .field-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #6c757d;
+            pointer-events: none;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            padding-left: 45px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        input.valid {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        input.invalid {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%236c757d' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            padding-top: 14px;
+        }
+
+        .hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .validation-message {
+            display: none;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #dc3545;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .validation-message.show {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        button {
+            padding: 14px 24px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #6b7280;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-outline:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .currency-prefix {
+            position: absolute;
+            left: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: #495057;
+            pointer-events: none;
+        }
+
+        .amount-input {
+            padding-left: 65px !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 0;
+            }
+
+            .form-container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .form-header {
+                padding: 24px;
+            }
+
+            .form-header-icon {
+                font-size: 40px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+
+            .form-body {
+                padding: 24px;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-primary {
+                grid-column: 1;
+            }
+        }
+
+        /* Accessibility improvements */
+        *:focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-header-icon">💰</div>
+        <h1>Add New Income</h1>
+        <p>Track your earnings and build your financial future</p>
+    </div>
+
+    <div class="form-body">
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+        </div>
+
+        <!-- Alert Message -->
+        <div id="message" class="alert"></div>
+
+        <form id="incomeForm">
+            <!-- Income Name -->
+            <div class="form-group">
+                <label for="name" class="required">
+                    <span>Income Name</span>
+                </label>
+                <div class="field-wrapper">
+                    <span class="field-icon">📝</span>
+                    <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            placeholder="e.g., Monthly Salary, Freelance Project"
+                            required
+                            maxlength="100"
+                            autocomplete="off"
+                    />
+                </div>
+                <div class="validation-message" id="nameError">
+                    ⚠️ Please enter a valid income name
+                </div>
+            </div>
+
+            <!-- Income Type -->
+            <div class="form-group">
+                <label for="incomeType" class="required">
+                    <span>Income Category</span>
+                </label>
+                <div class="field-wrapper">
+                    <span class="field-icon">🏷️</span>
+                    <select id="incomeType" name="incomeType" required>
+                        <option value="">Choose a category...</option>
+                        <option value="Salary">💼 Salary</option>
+                        <option value="Bonus">🎁 Bonus</option>
+                        <option value="Investments">📈 Investments</option>
+                        <option value="Dividends">💹 Dividends</option>
+                        <option value="Interest">🏦 Interest</option>
+                        <option value="Rollover">🔄 Rollover</option>
+                        <option value="Business Income">🏢 Business Income</option>
+                        <option value="Freelance">💻 Freelance</option>
+                        <option value="Rental Income">🏠 Rental Income</option>
+                        <option value="Pension">👴 Pension</option>
+                        <option value="Commission">💵 Commission</option>
+                        <option value="Refund">↩️ Refund</option>
+                        <option value="Gift">🎁 Gift</option>
+                        <option value="Sale of Assets">🏷️ Sale of Assets</option>
+                        <option value="Other">📦 Other</option>
+                    </select>
+                </div>
+                <div class="hint">💡 Select the type that best describes this income</div>
+            </div>
+
+            <!-- Amount -->
+            <div class="form-group">
+                <label for="amount" class="required">
+                    <span>Amount</span>
+                </label>
+                <div class="field-wrapper">
+                    <span class="field-icon">💵</span>
+                    <span class="currency-prefix">₹</span>
+                    <input
+                            id="amount"
+                            name="amount"
+                            type="number"
+                            class="amount-input"
+                            step="0.01"
+                            min="0.01"
+                            placeholder="0.00"
+                            required
+                            autocomplete="off"
+                    />
+                </div>
+                <div class="hint">💡 Enter amount in Indian Rupees (INR)</div>
+                <div class="validation-message" id="amountError">
+                    ⚠️ Please enter a valid amount
+                </div>
+            </div>
+
+            <!-- Date Received -->
+            <div class="form-group">
+                <label for="dateReceived">
+                    <span>Date Received</span>
+                </label>
+                <div class="field-wrapper">
+                    <span class="field-icon">📅</span>
+                    <input
+                            id="dateReceived"
+                            name="dateReceived"
+                            type="date"
+                    />
+                </div>
+                <div class="hint">💡 Leave empty to use today's date</div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">
+                    <span>Description</span>
+                </label>
+                <div class="field-wrapper">
+                    <span class="field-icon" style="top: 24px;">📄</span>
+                    <textarea
+                            id="description"
+                            name="description"
+                            placeholder="Add any additional notes or details about this income..."
+                            maxlength="500"
+                    ></textarea>
+                </div>
+                <div class="hint">💡 Optional: Add context or additional information</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <span>✓ Add Income</span>
+                </button>
+                <button type="button" class="btn-outline" id="homeBtn">
+                    <span>🏠 Home</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const form = document.getElementById('incomeForm');
+        const msgDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const progressSteps = document.querySelectorAll('.progress-step');
+
+        // Form fields
+        const nameInput = document.getElementById('name');
+        const typeInput = document.getElementById('incomeType');
+        const amountInput = document.getElementById('amount');
+        const dateInput = document.getElementById('dateReceived');
+        const descInput = document.getElementById('description');
+
+        // Load email from localStorage
+        const savedEmail = localStorage.getItem("email");
+        if (!savedEmail) {
+            showMessage("⚠️ User email not found. Please log in again.", 'error');
+        }
+
+        const API_URL = '/api/income/add';
+
+        // Set default date to today
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.value = today;
+
+        // Progress indicator logic
+        function updateProgress() {
+            const filledFields = [
+                nameInput.value.trim(),
+                typeInput.value,
+                amountInput.value
+            ].filter(val => val).length;
+
+            progressSteps.forEach((step, index) => {
+                if (index < filledFields) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+
+        // Real-time validation
+        nameInput.addEventListener('input', () => {
+            updateProgress();
+            if (nameInput.value.trim().length > 2) {
+                nameInput.classList.add('valid');
+                nameInput.classList.remove('invalid');
+            }
+        });
+
+        typeInput.addEventListener('change', updateProgress);
+
+        amountInput.addEventListener('input', () => {
+            updateProgress();
+            const value = parseFloat(amountInput.value);
+            if (value > 0) {
+                amountInput.classList.add('valid');
+                amountInput.classList.remove('invalid');
+            }
+        });
+
+        // Show message helper
+        function showMessage(text, type = 'error') {
+            msgDiv.className = `alert alert-${type} show`;
+            msgDiv.innerHTML = `
+                ${type === 'success' ? '✅' : '❌'}
+                <span>${text}</span>
+            `;
+
+            setTimeout(() => {
+                msgDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            msgDiv.classList.remove('show');
+
+            const name = nameInput.value.trim();
+            const incomeType = typeInput.value.trim();
+            const amount = amountInput.value.trim();
+            const dateReceived = dateInput.value || null;
+            const description = descInput.value.trim();
+
+            // Validation
+            if (!name || name.length < 3) {
+                showMessage('Income name must be at least 3 characters long', 'error');
+                nameInput.focus();
+                return;
+            }
+
+            if (!incomeType) {
+                showMessage('Please select an income category', 'error');
+                typeInput.focus();
+                return;
+            }
+
+            if (!amount || parseFloat(amount) <= 0) {
+                showMessage('Please enter a valid amount greater than 0', 'error');
+                amountInput.focus();
+                return;
+            }
+
+            if (!savedEmail) {
+                showMessage('User session expired. Please log in again.', 'error');
+                return;
+            }
+
+            const payload = {
+                name,
+                incomeType,
+                amount: parseFloat(amount),
+                currency: "INR",
+                dateReceived: dateReceived || null,
+                userEmail: savedEmail,
+                description: description || null
+            };
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Adding...</span>';
+
+            try {
+                const resp = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    throw new Error(text || `Server error (${resp.status})`);
+                }
+
+                const data = await resp.json();
+
+                // Success
+                showMessage('Income added successfully! 🎉', 'success');
+                form.reset();
+                dateInput.value = today;
+                progressSteps.forEach(step => step.classList.remove('active'));
+                progressSteps[0].classList.add('active');
+
+                // Remove validation classes
+                nameInput.classList.remove('valid');
+                amountInput.classList.remove('valid');
+
+            } catch (err) {
+                console.error(err);
+                showMessage('Failed to add income: ' + (err.message || 'Unknown error'), 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>✓ Add Income</span>';
+            }
+        });
+
+        // Home button
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'Home.html';
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.location.href = 'Home.html';
+            }
+        });
+
+    })();
+</script>
+</body>
+</html>

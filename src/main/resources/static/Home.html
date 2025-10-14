@@ -278,6 +278,8 @@
         <div class="action-buttons">
             <button class="btn-primary" onclick="goToLogExpense()">➕ Log Expense</button>
             <button class="btn-secondary" onclick="goToExpenses()">📊 View Expenses</button>
+            <button Class="btn-secondary" onclick="goToAddIncome()">💰 Add Income</button>
+            <button Class="btn-secondary" onclick="goToViewIncome()">👀 View Incomes </button>
             <button class="btn-logout" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
@@ -367,20 +369,37 @@
     }
     function goToLogExpense() { window.location.href = "LogExpense.html"; }
     function goToExpenses() { window.location.href = "Expenses.html"; }
+    function goToAddIncome() { window.location.href = "addincome.html";}
+    function goToViewIncome() { window.location.href = "viewincomes.html";}
 
     let chart;
     const ctx = document.getElementById('expensesChart').getContext('2d');
 
-    // Get current month range
+    // Get date range with conditional logic
     function getCurrentMonthRange() {
-        const now = new Date();
-        const start = new Date(now.getFullYear(), now.getMonth(), 1);
-        const end = now;
+        const today = new Date();
+        const lastDayCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
+        let start, end;
+
+        if (today.getDate() === lastDayCurrentMonth.getDate()) {
+            // Today is last day of current month
+            start = new Date(today); // today
+            const lastDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+            end = new Date(lastDayNextMonth);
+            end.setDate(end.getDate() - 1); // subtract 1 day
+        } else {
+            // Today is NOT last day of month
+            start = new Date(today.getFullYear(), today.getMonth(), 0); // last day of previous month
+            end = new Date(today.getFullYear(), today.getMonth() + 1, 0); // last day of current month
+            end.setDate(end.getDate() - 1); // subtract 1 day
+        }
+
+        // Format dates as yyyy-mm-dd
         const format = d => {
             const year = d.getFullYear();
-            const month = (d.getMonth() + 1).toString().padStart(2, '0');
-            const day = d.getDate().toString().padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         };
 
@@ -556,7 +575,7 @@
         });
     }
 
-    // Reset filters to current month
+    // Reset filters to calculated date range
     function resetFilters() {
         const { startDate, endDate } = getCurrentMonthRange();
         document.getElementById('startDate').value = startDate;
@@ -565,7 +584,7 @@
         fetchExpenses(startDate, endDate).then(drawChart);
     }
 
-    // Initial load - current month
+    // Initial load - set dates using conditional logic
     const { startDate, endDate } = getCurrentMonthRange();
     document.getElementById('startDate').value = startDate;
     document.getElementById('endDate').value = endDate;
@@ -579,5 +598,6 @@
         fetchExpenses(start, end, category).then(drawChart);
     }
 </script>
+
 </body>
 </html>
