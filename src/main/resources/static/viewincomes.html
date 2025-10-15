@@ -112,6 +112,20 @@
             border-color: white;
         }
 
+        .btn-edit {
+            background: #3b82f6;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
         .content {
             padding: 30px;
         }
@@ -272,8 +286,6 @@
 
         tbody tr:hover {
             background-color: #f8f9fa;
-            transform: scale(1.005);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         tbody tr:last-child td {
@@ -294,6 +306,12 @@
             font-weight: 600;
             background: #e9ecef;
             color: #495057;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
         .empty-state {
@@ -367,6 +385,144 @@
             color: #495057;
         }
 
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+            overflow-y: auto; /* Enable scrolling on the overlay */
+            padding: 20px 0; /* Add padding instead of margin */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto; /* Changed from 5% auto */
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: calc(100vh - 40px); /* Prevent overflow */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0; /* Prevent header from shrinking */
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto; /* Make only the body scrollable */
+            max-height: calc(100vh - 250px); /* Adjust based on header/footer height */
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-shrink: 0; /* Prevent footer from shrinking */
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .close:hover {
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header h1 {
@@ -388,11 +544,10 @@
             th, td {
                 padding: 12px 8px;
             }
-        }
 
-        /* Smooth transitions */
-        * {
-            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            .actions-cell {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -441,7 +596,6 @@
             </div>
 
             <div class="filters-grid">
-                <!-- Income Type Dropdown -->
                 <div class="filter-group">
                     <label>Income Category</label>
                     <select id="filterType">
@@ -505,11 +659,12 @@
                     <th>Amount (₹)</th>
                     <th>Date Received</th>
                     <th>Description</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                         <div class="loading-state">
                             <div class="loading-spinner"></div>
                             <p>Loading income data...</p>
@@ -518,6 +673,67 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>✏️ Edit Income</h2>
+            <span class="close" id="closeModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <input type="hidden" id="editId">
+
+                <div class="form-group">
+                    <label for="editName">Name *</label>
+                    <input type="text" id="editName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editType">Income Type *</label>
+                    <select id="editType" required>
+                        <option value="">Select Type</option>
+                        <option value="Salary">💼 Salary</option>
+                        <option value="Bonus">🎁 Bonus</option>
+                        <option value="Investments">📈 Investments</option>
+                        <option value="Dividends">💹 Dividends</option>
+                        <option value="Interest">🏦 Interest</option>
+                        <option value="Rollover">🔄 Rollover</option>
+                        <option value="Business Income">🏢 Business Income</option>
+                        <option value="Freelance">💻 Freelance</option>
+                        <option value="Rental Income">🏠 Rental Income</option>
+                        <option value="Pension">👴 Pension</option>
+                        <option value="Commission">💵 Commission</option>
+                        <option value="Refund">↩️ Refund</option>
+                        <option value="Gift">🎁 Gift</option>
+                        <option value="Sale of Assets">🏷️ Sale of Assets</option>
+                        <option value="Other">📦 Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editAmount">Amount (₹) *</label>
+                    <input type="number" id="editAmount" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editDate">Date Received *</label>
+                    <input type="date" id="editDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <textarea id="editDescription" placeholder="Optional notes..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" id="cancelBtn">Cancel</button>
+            <button class="btn-primary" id="saveBtn">💾 Save Changes</button>
         </div>
     </div>
 </div>
@@ -536,7 +752,7 @@
             return;
         }
 
-        const API_URL = '/api/income/list';
+        const API_URL = '/api/income';
         const filterType = document.getElementById('filterType');
         const filterDescription = document.getElementById('filterDescription');
         const startDate = document.getElementById('startDate');
@@ -546,6 +762,13 @@
         const clearBtn = document.getElementById('clearBtn');
         const addIncomeBtn = document.getElementById('addIncomeBtn');
         const homeBtn = document.getElementById('homeBtn');
+
+        // Modal elements
+        const editModal = document.getElementById('editModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const editForm = document.getElementById('editForm');
 
         // --- Format date for display ---
         function formatDisplayDate(dateString) {
@@ -557,6 +780,16 @@
             const month = monthNames[date.getMonth()];
             const year = String(date.getFullYear()).slice(-2);
             return `${day} ${month} ${year}`;
+        }
+
+        // --- Format date for input field (YYYY-MM-DD) ---
+        function formatInputDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         // --- Set default date range with conditional logic ---
@@ -603,10 +836,89 @@
             setTimeout(() => msg.innerHTML = '', 5000);
         }
 
+        // --- Open Edit Modal ---
+        function openEditModal(income) {
+            document.getElementById('editId').value = income.id;
+            document.getElementById('editName').value = income.name || '';
+            document.getElementById('editType').value = income.incomeType || '';
+            document.getElementById('editAmount').value = income.amount || '';
+            document.getElementById('editDate').value = formatInputDate(income.dateReceived);
+            document.getElementById('editDescription').value = income.description || '';
+            editModal.style.display = 'block';
+        }
+
+        // --- Close Edit Modal ---
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            editForm.reset();
+        }
+
+        // --- Delete Income ---
+        async function deleteIncome(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}"?\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const resp = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (resp.ok) {
+                    showMessage('✓ Income deleted successfully!', 'success');
+                    loadIncomes();
+                } else {
+                    throw new Error('Failed to delete income');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Failed to delete income: ' + (err.message || 'Unknown error'), 'error');
+            }
+        }
+
+        // --- Save Edit ---
+        async function saveEdit() {
+            if (!editForm.checkValidity()) {
+                editForm.reportValidity();
+                return;
+            }
+
+            const id = document.getElementById('editId').value;
+            const updatedIncome = {
+                name: document.getElementById('editName').value,
+                incomeType: document.getElementById('editType').value,
+                amount: parseFloat(document.getElementById('editAmount').value),
+                dateReceived: document.getElementById('editDate').value,
+                description: document.getElementById('editDescription').value,
+                userEmail: email
+            };
+
+            try {
+                const resp = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedIncome)
+                });
+
+                if (resp.ok) {
+                    showMessage('✓ Income updated successfully!', 'success');
+                    closeEditModal();
+                    loadIncomes();
+                } else {
+                    throw new Error('Failed to update income');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Failed to update income: ' + (err.message || 'Unknown error'), 'error');
+            }
+        }
+
         // --- Fetch and render incomes ---
         async function loadIncomes() {
             msg.innerHTML = '';
-            tableBody.innerHTML = `<tr><td colspan="5">
+            tableBody.innerHTML = `<tr><td colspan="6">
                 <div class="loading-state">
                     <div class="loading-spinner"></div>
                     <p>Loading income data...</p>
@@ -622,12 +934,12 @@
             if (sortOrder.value) params.append('sortOrder', sortOrder.value);
 
             try {
-                const resp = await fetch(`${API_URL}?${params.toString()}`);
+                const resp = await fetch(`${API_URL}/list?${params.toString()}`);
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const data = await resp.json();
 
                 if (!data.length) {
-                    tableBody.innerHTML = `<tr><td colspan="5">
+                    tableBody.innerHTML = `<tr><td colspan="6">
                         <div class="empty-state">
                             <div class="empty-state-icon">📭</div>
                             <h3>No Income Records Found</h3>
@@ -646,12 +958,21 @@
                         <td class="amount-cell">₹${i.amount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                         <td class="date-cell">${formatDisplayDate(i.dateReceived)}</td>
                         <td>${i.description || '-'}</td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="btn-edit" onclick="editIncome(${i.id})">✏️ Edit</button>
+                                <button class="btn-delete" onclick="deleteIncomeHandler(${i.id}, '${(i.name || '').replace(/'/g, "\\'")}')">🗑️ Delete</button>
+                            </div>
+                        </td>
                     </tr>
                 `).join('');
 
                 const total = data.reduce((sum, i) => sum + i.amount, 0);
                 totalEl.textContent = '₹' + total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 recordCountEl.textContent = data.length.toLocaleString('en-IN');
+
+                // Store data for edit/delete operations
+                window.incomesData = data;
 
             } catch (err) {
                 console.error(err);
@@ -671,6 +992,18 @@
             loadIncomes();
         }
 
+        // Global functions for inline onclick handlers
+        window.editIncome = function(id) {
+            const income = window.incomesData.find(i => i.id === id);
+            if (income) {
+                openEditModal(income);
+            }
+        };
+
+        window.deleteIncomeHandler = function(id, name) {
+            deleteIncome(id, name);
+        };
+
         // Event listeners
         filterBtn.addEventListener('click', () => {
             updateDateRangeDisplay();
@@ -680,6 +1013,18 @@
         clearBtn.addEventListener('click', clearFilters);
         addIncomeBtn.addEventListener('click', () => window.location.href = 'addincome.html');
         homeBtn.addEventListener('click', () => window.location.href = 'Home.html');
+
+        // Modal events
+        closeModal.addEventListener('click', closeEditModal);
+        cancelBtn.addEventListener('click', closeEditModal);
+        saveBtn.addEventListener('click', saveEdit);
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === editModal) {
+                closeEditModal();
+            }
+        });
 
         // Allow Enter key to trigger filter
         [filterDescription, startDate, endDate].forEach(input => {

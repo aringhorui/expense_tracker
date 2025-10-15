@@ -5,6 +5,7 @@ import com.aringhorui.Repositories.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import com.aringhorui.DTO.CategorySummary;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,4 +29,14 @@ public class HomeController {
     ) {
         return expenseRepository.findExpensesByFilters(email, startDate, endDate, category, paymentMethod, expenseType);
     }
+
+    @GetMapping("/expenses/category-summary")
+    public List<CategorySummary> getExpensesByCategory(
+            @RequestParam String email,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        return expenseRepository.findExpensesByCategory(email, startDate, endDate);
+    }
+
 }

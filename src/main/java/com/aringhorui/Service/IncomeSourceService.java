@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,5 +75,42 @@ public class IncomeSourceService {
         }
 
         return incomes;
+    }
+
+    /**
+     * Get income by ID
+     */
+    public Optional<IncomeSource> getIncomeById(Long id) {
+        return incomeSourceRepository.findById(id);
+    }
+
+    /**
+     * Update an existing income
+     */
+    public IncomeSource updateIncome(Long id, IncomeSource updatedIncome) {
+        Optional<IncomeSource> existingIncome = incomeSourceRepository.findById(id);
+
+        if (existingIncome.isPresent()) {
+            IncomeSource income = existingIncome.get();
+            income.setName(updatedIncome.getName());
+            income.setIncomeType(updatedIncome.getIncomeType());
+            income.setAmount(updatedIncome.getAmount());
+            income.setDateReceived(updatedIncome.getDateReceived());
+            income.setDescription(updatedIncome.getDescription());
+            return incomeSourceRepository.save(income);
+        } else {
+            throw new RuntimeException("Income source not found with id: " + id);
+        }
+    }
+
+    /**
+     * Delete an income by ID
+     */
+    public boolean deleteIncome(Long id) {
+        if (incomeSourceRepository.existsById(id)) {
+            incomeSourceRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

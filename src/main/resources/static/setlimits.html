@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Limits</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f7f7f7;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding-top: 50px;
+        }
+        form {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          width: 320px;
+          margin-bottom: 30px;
+        }
+        input {
+          width: 100%;
+          padding: 8px;
+          margin: 8px 0;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        button {
+          padding: 8px 12px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        button:hover {
+          background-color: #0056b3;
+        }
+        .delete-btn {
+          background-color: #dc3545;
+        }
+        .delete-btn:hover {
+          background-color: #b02a37;
+        }
+        #result {
+          margin-top: 10px;
+          font-weight: bold;
+          text-align: center;
+        }
+        table {
+          border-collapse: collapse;
+          width: 90%;
+          max-width: 700px;
+          background-color: white;
+          border-radius: 10px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          overflow: hidden;
+        }
+        th, td {
+          text-align: left;
+          padding: 12px;
+          border-bottom: 1px solid #ddd;
+        }
+        th {
+          background-color: #007bff;
+          color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add / Update Limit</h2>
+<form id="limitForm">
+    <label>Super Category:</label>
+    <input type="text" id="superCategory" required>
+
+    <label>Amount:</label>
+    <input type="number" id="amount" required>
+
+    <button type="submit">Save Limit</button>
+    <div id="result"></div>
+</form>
+
+<h3>Current Limits</h3>
+<table id="limitsTable">
+    <thead>
+    <tr>
+        <th>Super Category</th>
+        <th>Amount</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="limitsBody">
+    <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+    </tbody>
+</table>
+
+<script>
+    const LOCAL_EMAIL = localStorage.getItem("email") || "testuser@example.com";
+    const resultDiv = document.getElementById("result");
+    const limitsBody = document.getElementById("limitsBody");
+
+    async function loadLimits() {
+      try {
+        const res = await fetch(`http://localhost:8080/api/limits/by-email?email=${LOCAL_EMAIL}`);
+        if (!res.ok) throw new Error("Failed to load limits");
+        const data = await res.json();
+
+        if (data.length === 0) {
+          limitsBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No limits found</td></tr>`;
+          return;
+        }
+
+        limitsBody.innerHTML = data.map(limit => `
+          <tr>
+            <td>${limit.superCategory}</td>
+            <td>${limit.amount}</td>
+            <td>
+              <button onclick="editLimit('${limit.superCategory}', ${limit.amount})">✏️ Edit</button>
+              <button class="delete-btn" onclick="deleteLimit('${limit.superCategory}')">🗑️ Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        limitsBody.innerHTML = `<tr><td colspan="3" style="color:red;text-align:center;">${err.message}</td></tr>`;
+      }
+    }
+
+    document.getElementById("limitForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const superCategory = document.getElementById("superCategory").value;
+      const amount = document.getElementById("amount").value;
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/limits/add?email=${LOCAL_EMAIL}&superCategory=${superCategory}&amount=${amount}`, {
+          method: "POST"
+        });
+        if (!res.ok) throw new Error("Failed to save limit");
+        resultDiv.style.color = "green";
+        resultDiv.textContent = "✅ Limit saved successfully!";
+        e.target.reset();
+        loadLimits();
+      } catch (err) {
+        resultDiv.style.color = "red";
+        resultDiv.textContent = `❌ ${err.message}`;
+      }
+    });
+
+    async function deleteLimit(superCategory) {
+      if (!confirm(`Are you sure you want to delete limit for "${superCategory}"?`)) return;
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/limits/delete?email=${LOCAL_EMAIL}&superCategory=${superCategory}`, {
+          method: "DELETE"
+        });
+        if (!res.ok) throw new Error("Failed to delete limit");
+        loadLimits();
+      } catch (err) {
+        alert("❌ " + err.message);
+      }
+    }
+
+    function editLimit(superCategory, amount) {
+      document.getElementById("superCategory").value = superCategory;
+      document.getElementById("amount").value = amount;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    loadLimits();
+</script>
+
+</body>
+</html>

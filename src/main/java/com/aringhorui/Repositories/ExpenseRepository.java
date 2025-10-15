@@ -1,6 +1,7 @@
 package com.aringhorui.Repositories;
 
 import com.aringhorui.Entities.Expense;
+import com.aringhorui.DTO.CategorySummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,22 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             @Param("paymentMethod") String paymentMethod,
             @Param("expenseType") String expenseType
     );
+
+    @Query("SELECT new com.aringhorui.DTO.CategorySummary(e.category, SUM(e.amount)) " +
+            "FROM Expense e WHERE e.userEmail = :email " +
+            "AND (CAST(:startDate AS date) IS NULL OR e.date >= :startDate) " +
+            "AND (CAST(:endDate AS date) IS NULL OR e.date <= :endDate) " +
+            "GROUP BY e.category " +
+            "ORDER BY SUM(e.amount) DESC")
+    List<CategorySummary> findExpensesByCategory(
+            @Param("email") String email,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+
+
+
 
 
 

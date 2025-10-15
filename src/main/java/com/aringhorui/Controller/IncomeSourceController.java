@@ -4,14 +4,17 @@ import com.aringhorui.Entities.IncomeSource;
 import com.aringhorui.Service.IncomeSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/income")
-@CrossOrigin(origins = "*") // optional: allows frontend access from anywhere
+@CrossOrigin(origins = "*")
 public class IncomeSourceController {
 
     private final IncomeSourceService incomeSourceService;
@@ -29,8 +32,6 @@ public class IncomeSourceController {
 
     /**
      * Get incomes for a user with optional filters
-     * Example query:
-     * /api/income/list?userEmail=john@example.com&incomeType=Salary&startDate=2025-01-01&endDate=2025-10-01&sortOrder=desc
      */
     @GetMapping("/list")
     public List<IncomeSource> getIncomes(
@@ -42,5 +43,43 @@ public class IncomeSourceController {
             @RequestParam(required = false, defaultValue = "asc") String sortOrder
     ) {
         return incomeSourceService.getIncomes(userEmail, incomeType, description, startDate, endDate, sortOrder);
+    }
+
+    /**
+     * Get income by ID
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<IncomeSource> getIncomeById(@PathVariable Long id) {
+        Optional<IncomeSource> income = incomeSourceService.getIncomeById(id);
+        return income.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Update an existing income
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<IncomeSource> updateIncome(
+            @PathVariable Long id,
+            @RequestBody IncomeSource incomeSource
+    ) {
+        try {
+            IncomeSource updated = incomeSourceService.updateIncome(id, incomeSource);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Delete an income
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteIncome(@PathVariable Long id) {
+        boolean deleted = incomeSourceService.deleteIncome(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

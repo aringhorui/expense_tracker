@@ -13,37 +13,77 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Header Section */
+        /* Header Section with Glassmorphism */
         .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 28px 35px;
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .greeting-section h1 {
             color: white;
-            font-size: 2rem;
-            font-weight: 600;
+            font-size: 2.2rem;
+            font-weight: 700;
             margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .greeting-section p {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .action-buttons {
@@ -55,12 +95,33 @@
         button {
             padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.95rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ripple effect on button click */
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
@@ -69,94 +130,264 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
         }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
         }
 
         .btn-logout {
-            background: #ff4757;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
             color: white;
         }
 
         .btn-logout:hover {
-            background: #ee3547;
+            background: linear-gradient(135deg, #ee5a6f 0%, #c92a2a 100%);
+            transform: translateY(-3px);
         }
 
-        /* Chart Card */
-        .chart-card {
-            background: white;
+        /* Financial Overview with Enhanced Glassmorphism */
+        .financial-overview {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .overview-header h2 {
+            color: #1e293b;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .overview-date {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .overview-item {
+            padding: 24px;
             border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 24px;
+            border-left: 5px solid;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overview-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .overview-item:hover::before {
+            opacity: 1;
+        }
+
+        .overview-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .overview-item.income {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left-color: #10b981;
+        }
+
+        .overview-item.expense {
+            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+            border-left-color: #ef4444;
+        }
+
+        .overview-item.remaining {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-left-color: #3b82f6;
+        }
+
+        .overview-item.remaining.positive {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left-color: #10b981;
+        }
+
+        .overview-item.remaining.negative {
+            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+            border-left-color: #ef4444;
+        }
+
+        .overview-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .overview-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+            line-height: 1;
+        }
+
+        .overview-subtext {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Charts Grid with Staggered Animation */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Chart Card with Enhanced Glassmorphism */
+        .chart-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .chart-card:nth-child(1) { animation-delay: 0.2s; }
+        .chart-card:nth-child(2) { animation-delay: 0.3s; }
+        .chart-card:nth-child(3) { animation-delay: 0.4s; }
+
+        .chart-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
         }
 
         .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
         }
 
         .chart-header h2 {
-            color: #2d3748;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .chart-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #718096;
-            font-size: 0.875rem;
+            color: #1e293b;
+            font-size: 1.35rem;
+            font-weight: 700;
         }
 
         .total-badge {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
             font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .chart-container {
             position: relative;
-            height: 450px;
+            height: 420px;
         }
 
-        /* Filter Card */
+        /* Filter Card with Modern Design */
         .filter-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: fadeInUp 0.6s ease-out 0.5s both;
         }
 
         .filter-card h3 {
-            color: #2d3748;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .filters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
             align-items: end;
         }
 
@@ -166,95 +397,181 @@
         }
 
         .filter-group label {
-            color: #4a5568;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 8px;
+            color: #475569;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .filter-group input,
         .filter-group select {
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.95rem;
             transition: all 0.3s ease;
             background: white;
+            font-family: inherit;
+            font-weight: 500;
         }
 
         .filter-group input:focus,
         .filter-group select:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
         }
 
         .btn-apply {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 10px 28px;
+            padding: 12px 32px;
             border: none;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-apply:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
         .btn-reset {
-            background: #e2e8f0;
-            color: #4a5568;
-            padding: 10px 28px;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 12px 32px;
             border: none;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-reset:hover {
-            background: #cbd5e0;
+            background: #e2e8f0;
+            transform: translateY(-3px);
         }
 
-        /* Empty State */
+        /* Loading Overlay with Modern Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            border: 5px solid #f1f5f9;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader p {
+            color: #475569;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Empty State with Better Design */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #a0aec0;
+            padding: 80px 30px;
+            color: #94a3b8;
         }
 
         .empty-state h3 {
-            color: #4a5568;
-            margin-bottom: 8px;
-            font-size: 1.2rem;
+            color: #475569;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
 
         .empty-state p {
-            color: #718096;
-            font-size: 0.95rem;
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Error Message with Better Styling */
+        .error-message {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            padding: 18px 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            display: none;
+            font-weight: 600;
+            border-left: 5px solid #dc2626;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .error-message.show {
+            display: block;
         }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
             .header {
                 flex-direction: column;
                 align-items: flex-start;
+                padding: 24px 25px;
             }
 
             .greeting-section h1 {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
             }
 
             .action-buttons {
                 width: 100%;
+                flex-direction: column;
             }
 
             .action-buttons button {
-                flex: 1;
+                width: 100%;
             }
 
             .filters-grid {
@@ -262,13 +579,47 @@
             }
 
             .chart-container {
-                height: 350px;
+                height: 320px;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .overview-value {
+                font-size: 1.8rem;
+            }
+
+            .financial-overview,
+            .chart-card,
+            .filter-card {
+                padding: 24px;
+            }
+        }
+
+        /* Scroll Animation */
+        @media (prefers-reduced-motion: no-preference) {
+            .chart-card,
+            .financial-overview,
+            .filter-card {
+                opacity: 0;
+                animation: fadeInUp 0.6s ease-out forwards;
             }
         }
     </style>
 </head>
 <body>
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Loading dashboard...</p>
+    </div>
+</div>
+
 <div class="container">
+    <!-- Error Message -->
+    <div class="error-message" id="errorMessage"></div>
+
     <!-- Header -->
     <div class="header">
         <div class="greeting-section">
@@ -276,26 +627,92 @@
             <p id="userEmail"></p>
         </div>
         <div class="action-buttons">
-            <button class="btn-primary" onclick="goToLogExpense()">➕ Log Expense</button>
+            <!--<button class="btn-primary" onclick="goToLogExpense()">➕ Log Expense</button>-->
             <button class="btn-secondary" onclick="goToExpenses()">📊 View Expenses</button>
-            <button Class="btn-secondary" onclick="goToAddIncome()">💰 Add Income</button>
-            <button Class="btn-secondary" onclick="goToViewIncome()">👀 View Incomes </button>
+            <!--<button class="btn-secondary" onclick="goToAddIncome()">💰 Add Income</button>-->
+            <button class="btn-secondary" onclick="goToViewIncome()">👀 View Incomes</button>
             <button class="btn-logout" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
 
-    <!-- Chart -->
-    <div class="chart-card">
-        <div class="chart-header">
-            <h2>💰 Expense Trends</h2>
-            <span class="total-badge" id="totalExpense">₹0</span>
+    <!-- Financial Overview -->
+    <div class="financial-overview">
+        <div class="overview-header">
+            <h2>💳 Salary Cycle Overview</h2>
+            <div class="overview-date" id="overviewDateRange">Loading...</div>
         </div>
-        <div class="chart-container" id="chartWrapper">
-            <canvas id="expensesChart"></canvas>
+        <div class="overview-grid">
+            <div class="overview-item income">
+                <div class="overview-label">💰 Total Income</div>
+                <div class="overview-value" id="totalIncome">₹0.00</div>
+                <div class="overview-subtext" id="incomeCount">0 records</div>
+            </div>
+            <div class="overview-item expense">
+                <div class="overview-label">💸 Total Expenses</div>
+                <div class="overview-value" id="totalExpenses">₹0.00</div>
+                <div class="overview-subtext" id="expenseCount">0 records</div>
+            </div>
+            <div class="overview-item remaining" id="remainingCard">
+                <div class="overview-label">💵 Remaining Amount</div>
+                <div class="overview-value" id="remainingAmount">₹0.00</div>
+                <div class="overview-subtext" id="remainingPercentage">0% of income</div>
+            </div>
         </div>
     </div>
 
-    <!-- Filters (Below Chart) -->
+
+
+        <!-- Expense Type Pie Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2>📊 Expense Type Breakdown</h2>
+                <span class="total-badge" id="expenseTypeTotal">₹0</span>
+            </div>
+            <div class="chart-container" id="expenseTypeChartWrapper">
+                <canvas id="expenseTypePieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Category Pie Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2>🎯 Category Breakdown</h2>
+                <span class="total-badge" id="categoryCount">0 Categories</span>
+            </div>
+            <div class="chart-container" id="pieChartWrapper">
+                <canvas id="expensesPieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Line Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2>📈 Expense Trends</h2>
+                    <span class="total-badge" id="totalExpense">₹0</span>
+                </div>
+                <div class="chart-container" id="lineChartWrapper">
+                    <canvas id="expensesLineChart"></canvas>
+                </div>
+        </div>
+
+        <!-- Budget vs Actual Bar Chart -->
+        <div class="chart-card" style="grid-column: 1 / -1;">
+            <div class="chart-header">
+                <h2>📊 Budget vs Actual Spending</h2>
+                <span class="total-badge" id="budgetChartBadge">Loading...</span>
+            </div>
+            <div class="chart-container" id="budgetChartWrapper" style="height: 500px;">
+                <canvas id="budgetBarChart"></canvas>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- Filters -->
     <div class="filter-card">
         <h3>📅 Filter & Customize View</h3>
         <div class="filters-grid">
@@ -309,37 +726,37 @@
             </div>
             <div class="filter-group">
                 <label for="categoryFilter">Category</label>
-                    <select id="categoryFilter">
-                        <option value="">📊 All Categories</option>
-                        <option value="Rent/Housing">🏠 Rent/Housing</option>
-                        <option value="Medical">🏥 Medical</option>
-                        <option value="Fitness">💪 Fitness</option>
-                        <option value="Loans/Debt">💳 Loans/Debt</option>
-                        <option value="Food">🍔 Food</option>
-                        <option value="Beverages">☕ Beverages</option>
-                        <option value="Dine Out">🍽️ Dine Out</option>
-                        <option value="Groceries">🛒 Groceries</option>
-                        <option value="Travel">✈️ Travel</option>
-                        <option value="Fuel">⛽ Fuel</option>
-                        <option value="Investing">📈 Investing</option>
-                        <option value="Education">📚 Education</option>
-                        <option value="Entertainment">🎬 Entertainment</option>
-                        <option value="Personal Care">💅 Personal Care</option>
-                        <option value="Clothing/Footwear">👕 Clothing/Footwear</option>
-                        <option value="Electronics">📱 Electronics</option>
-                        <option value="Alcohol">🍺 Alcohol</option>
-                        <option value="Cigarettes">🚬 Cigarettes</option>
-                        <option value="Gifts/Donations">🎁 Gifts/Donations</option>
-                        <option value="Taxes">🧾 Taxes</option>
-                        <option value="Subscriptions">📺 Subscriptions</option>
-                        <option value="Utilities">💡 Utilities</option>
-                        <option value="Insurance">🛡️ Insurance</option>
-                        <option value="Trips">🗺️ Trips</option>
-                        <option value="Others">📦 Others</option>
-                    </select>
+                <select id="categoryFilter">
+                    <option value="">📊 All Categories</option>
+                    <option value="Rent/Housing">🏠 Rent/Housing</option>
+                    <option value="Medical">🏥 Medical</option>
+                    <option value="Fitness">💪 Fitness</option>
+                    <option value="Loans/Debt">💳 Loans/Debt</option>
+                    <option value="Food">🍔 Food</option>
+                    <option value="Beverages">☕ Beverages</option>
+                    <option value="Dine Out">🍽️ Dine Out</option>
+                    <option value="Groceries">🛒 Groceries</option>
+                    <option value="Travel">✈️ Travel</option>
+                    <option value="Fuel">⛽ Fuel</option>
+                    <option value="Investing">📈 Investing</option>
+                    <option value="Education">📚 Education</option>
+                    <option value="Entertainment">🎬 Entertainment</option>
+                    <option value="Personal Care">💅 Personal Care</option>
+                    <option value="Clothing/Footwear">👕 Clothing/Footwear</option>
+                    <option value="Electronics">📱 Electronics</option>
+                    <option value="Alcohol">🍺 Alcohol</option>
+                    <option value="Cigarettes">🚬 Cigarettes</option>
+                    <option value="Gifts/Donations">🎁 Gifts/Donations</option>
+                    <option value="Taxes">🧾 Taxes</option>
+                    <option value="Subscriptions">📺 Subscriptions</option>
+                    <option value="Utilities">💡 Utilities</option>
+                    <option value="Insurance">🛡️ Insurance</option>
+                    <option value="Trips">🗺️ Trips</option>
+                    <option value="Others">📦 Others</option>
+                </select>
             </div>
             <div class="filter-group">
-                <button class="btn-apply" onclick="updateChart()">Apply Filters</button>
+                <button class="btn-apply" onclick="updateDashboard()">Apply Filters</button>
             </div>
             <div class="filter-group">
                 <button class="btn-reset" onclick="resetFilters()">Reset to This Month</button>
@@ -347,6 +764,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 <script>
     const firstName = localStorage.getItem("firstName");
@@ -372,8 +792,29 @@
     function goToAddIncome() { window.location.href = "addincome.html";}
     function goToViewIncome() { window.location.href = "viewincomes.html";}
 
-    let chart;
-    const ctx = document.getElementById('expensesChart').getContext('2d');
+    let lineChart;
+    let pieChart;
+    let expenseTypePieChart = null;
+    let budgetBarChart = null;
+
+    // Show/hide loading
+    function showLoading() {
+        document.getElementById('loadingOverlay').classList.add('active');
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.remove('active');
+    }
+
+    // Show error message
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+        setTimeout(() => {
+            errorDiv.classList.remove('show');
+        }, 5000);
+    }
 
     // Get date range with conditional logic
     function getCurrentMonthRange() {
@@ -383,19 +824,16 @@
         let start, end;
 
         if (today.getDate() === lastDayCurrentMonth.getDate()) {
-            // Today is last day of current month
-            start = new Date(today); // today
+            start = new Date(today);
             const lastDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
             end = new Date(lastDayNextMonth);
-            end.setDate(end.getDate() - 1); // subtract 1 day
+            end.setDate(end.getDate() - 1);
         } else {
-            // Today is NOT last day of month
-            start = new Date(today.getFullYear(), today.getMonth(), 0); // last day of previous month
-            end = new Date(today.getFullYear(), today.getMonth() + 1, 0); // last day of current month
-            end.setDate(end.getDate() - 1); // subtract 1 day
+            start = new Date(today.getFullYear(), today.getMonth(), 0);
+            end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            end.setDate(end.getDate() - 1);
         }
 
-        // Format dates as yyyy-mm-dd
         const format = d => {
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -414,18 +852,602 @@
         return `${day} ${month}`;
     }
 
-    // Fetch expenses
-    async function fetchExpenses(startDate = '', endDate = '', category = '') {
-        let url = `/api/expenses?email=${email}`;
-        if(startDate) url += `&startDate=${startDate}`;
-        if(endDate) url += `&endDate=${endDate}`;
-        if(category) url += `&category=${category}`;
-        const response = await fetch(url);
-        return await response.json();
+    // Format date range for display
+    function formatDateRange(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        const formatDate = (date) => {
+            const day = date.getDate();
+            const month = date.toLocaleString('en-IN', { month: 'short' });
+            const year = date.getFullYear();
+            return `${day} ${month} ${year}`;
+        };
+
+        return `${formatDate(start)} - ${formatDate(end)}`;
     }
 
-    // Draw chart
-    async function drawChart(data) {
+    // Fetch incomes for salary cycle
+    async function fetchSalaryCycleIncomes(startDate, endDate) {
+        try {
+            const params = new URLSearchParams();
+            params.append('userEmail', email);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+
+            const url = `/api/income/list?${params.toString()}`;
+            console.log('Fetching incomes from:', url);
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('Income data received:', data.length, 'records');
+
+            return data;
+        } catch (error) {
+            console.error('Error fetching incomes:', error);
+            return [];
+        }
+    }
+
+    // Fetch expenses with improved error handling
+    async function fetchExpenses(startDate = '', endDate = '', category = '') {
+        try {
+            let url = `http://localhost:8080/api/expenses?email=${encodeURIComponent(email)}`;
+            if(startDate) url += `&startDate=${startDate}`;
+            if(endDate) url += `&endDate=${endDate}`;
+            if(category) url += `&category=${encodeURIComponent(category)}`;
+
+            console.log('Fetching expenses from:', url);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('Expenses data received:', data);
+            return data;
+        } catch (error) {
+            console.error('Error fetching expenses:', error);
+            showError('Failed to load expenses: ' + error.message);
+            return [];
+        }
+    }
+
+    // Fetch expenses list for counting
+    async function fetchExpensesList(startDate, endDate) {
+        try {
+            const params = new URLSearchParams();
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+
+            const url = `http://localhost:8080/api/expenses/list/${encodeURIComponent(email)}?${params.toString()}`;
+            console.log('Fetching expense list from:', url);
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching expense list:', error);
+            return [];
+        }
+    }
+
+    // Fetch category summary with improved error handling
+    async function fetchCategorySummary(startDate = '', endDate = '') {
+        try {
+            let url = `http://localhost:8080/api/expenses/category-summary?email=${encodeURIComponent(email)}`;
+            if(startDate) url += `&startDate=${startDate}`;
+            if(endDate) url += `&endDate=${endDate}`;
+
+            console.log('Fetching category summary from:', url);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('Category summary data received:', data);
+            return data;
+        } catch (error) {
+            console.error('Error fetching category summary:', error);
+            showError('Failed to load category breakdown: ' + error.message);
+            return [];
+        }
+    }
+
+    // Update financial overview
+    async function updateFinancialOverview(startDate, endDate) {
+        try {
+            // Fetch both income and expense data in parallel
+            const [incomeData, expenseData] = await Promise.all([
+                fetchSalaryCycleIncomes(startDate, endDate),
+                fetchExpensesList(startDate, endDate)
+            ]);
+
+            // Calculate totals
+            const totalIncome = incomeData.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const totalExpense = expenseData.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const remaining = totalIncome - totalExpense;
+            const remainingPercent = totalIncome > 0 ? ((remaining / totalIncome) * 100).toFixed(1) : 0;
+
+            // Update income display
+            document.getElementById('totalIncome').textContent =
+                '₹' + totalIncome.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('incomeCount').textContent =
+                `${incomeData.length} ${incomeData.length === 1 ? 'record' : 'records'}`;
+
+            // Update expense display
+            document.getElementById('totalExpenses').textContent =
+                '₹' + totalExpense.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('expenseCount').textContent =
+                `${expenseData.length} ${expenseData.length === 1 ? 'record' : 'records'}`;
+
+            // Update remaining amount display
+            document.getElementById('remainingAmount').textContent =
+                '₹' + remaining.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('remainingPercentage').textContent =
+                `${remainingPercent}% of income`;
+
+            // Update date range
+            document.getElementById('overviewDateRange').textContent = formatDateRange(startDate, endDate);
+
+            // Update remaining card color based on positive/negative
+            const remainingCard = document.getElementById('remainingCard');
+            remainingCard.classList.remove('positive', 'negative');
+            if (remaining >= 0) {
+                remainingCard.classList.add('positive');
+            } else {
+                remainingCard.classList.add('negative');
+            }
+
+            console.log('Financial overview updated:', { totalIncome, totalExpense, remaining });
+        } catch (error) {
+            console.error('Error updating financial overview:', error);
+            document.getElementById('totalIncome').textContent = '₹0.00';
+            document.getElementById('totalExpenses').textContent = '₹0.00';
+            document.getElementById('remainingAmount').textContent = '₹0.00';
+        }
+    }
+
+    // Group expenses by type and calculate totals
+    function groupExpensesByType(expenses) {
+        const grouped = expenses.reduce((acc, expense) => {
+            const type = expense.expenseType || 'Other';
+            if (!acc[type]) {
+                acc[type] = 0;
+            }
+            acc[type] += expense.amount || 0;
+            return acc;
+        }, {});
+
+        return grouped;
+    }
+
+    // Draw expense type pie chart
+    async function drawExpenseTypePieChart(expenses) {
+        const chartWrapper = document.getElementById('expenseTypeChartWrapper');
+
+        if (!expenses || expenses.length === 0) {
+            if (expenseTypePieChart) {
+                expenseTypePieChart.destroy();
+                expenseTypePieChart = null;
+            }
+            chartWrapper.innerHTML = `
+                <div class="empty-state">
+                    <h3>No Expense Data</h3>
+                    <p>Add expenses to see type breakdown</p>
+                </div>
+            `;
+            document.getElementById('expenseTypeTotal').textContent = '₹0';
+            return;
+        }
+
+        // Restore canvas if it was replaced
+        if (!document.getElementById('expenseTypePieChart')) {
+            chartWrapper.innerHTML = '<canvas id="expenseTypePieChart"></canvas>';
+        }
+
+        const groupedData = groupExpensesByType(expenses);
+        const labels = Object.keys(groupedData);
+        const amounts = Object.values(groupedData);
+        const total = amounts.reduce((sum, amount) => sum + amount, 0);
+
+        // Update total badge
+        document.getElementById('expenseTypeTotal').textContent =
+            '₹' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Define colors for each expense type
+        const colorMap = {
+            'Needs': '#ffc107',      // Yellow
+            'Wants': '#17a2b8',      // Cyan
+            'Investments': '#28a745', // Green
+            'Other': '#6c757d'       // Gray
+        };
+
+        const backgroundColors = labels.map(label => colorMap[label] || '#6c757d');
+
+        // Destroy existing chart if it exists
+        if (expenseTypePieChart) {
+            expenseTypePieChart.destroy();
+            expenseTypePieChart = null;
+        }
+
+        const ctx = document.getElementById('expenseTypePieChart').getContext('2d');
+
+        expenseTypePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Expense Type',
+                    data: amounts,
+                    backgroundColor: backgroundColors,
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                                weight: '500'
+                            },
+                            usePointStyle: true,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => {
+                                    const value = data.datasets[0].data[i];
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return {
+                                        text: `${label}: ${percentage}%`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        hidden: false,
+                                        index: i
+                                    };
+                                });
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ₹${value.toLocaleString('en-IN', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1000
+                }
+            }
+        });
+
+        console.log('Expense type pie chart drawn with', labels.length, 'types');
+    }
+
+    // Draw Budget vs Actual Bar Chart with Remaining Amount
+    async function drawBudgetChart() {
+        const chartWrapper = document.getElementById('budgetChartWrapper');
+
+        try {
+            // Fetch limits
+            const limitsRes = await fetch(`http://localhost:8080/api/limits/list?email=${encodeURIComponent(email)}`);
+            if (!limitsRes.ok) throw new Error("Failed to fetch limits");
+            const limits = await limitsRes.json();
+
+            if (!limits || limits.length === 0) {
+                if (budgetBarChart) {
+                    budgetBarChart.destroy();
+                    budgetBarChart = null;
+                }
+                chartWrapper.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Budget Limits Set</h3>
+                        <p>Add budget limits to see spending comparison</p>
+                    </div>
+                `;
+                document.getElementById('budgetChartBadge').textContent = 'No Data';
+                return;
+            }
+
+            // Restore canvas if it was replaced
+            if (!document.getElementById('budgetBarChart')) {
+                chartWrapper.innerHTML = '<canvas id="budgetBarChart"></canvas>';
+            }
+
+            // Category Mapping
+            const CATEGORY_MAPPING = {
+                "Rent/Housing": ["Rent/Housing"],
+                "Food and Groceries": ["Food", "Beverages", "Groceries"],
+                "Travel and Fuel": ["Travel", "Fuel"],
+                "Wants": ["Entertainment","Dine Out", "Subscriptions", "Trips","Personal Care", "Clothing/Footwear","Electronics", "Gifts/Donations", "Others","Alcohol","Cigarettes"]
+            };
+
+            // Fetch current month expenses
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+
+            const params = new URLSearchParams();
+            if (start) params.append('startDate', start);
+            if (end) params.append('endDate', end);
+
+            const expensesUrl = `http://localhost:8080/api/expenses/list/${encodeURIComponent(email)}?${params.toString()}`;
+            const expensesRes = await fetch(expensesUrl, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!expensesRes.ok) throw new Error("Failed to fetch expenses");
+            const expenses = await expensesRes.json();
+
+            // Calculate spent amounts and remaining for each super category
+            const labels = [];
+            const budgetData = [];
+            const actualData = [];
+            const remainingData = [];
+            const actualColors = [];
+
+            let totalBudget = 0;
+            let totalSpent = 0;
+
+            limits.forEach(limit => {
+                const categories = CATEGORY_MAPPING[limit.superCategory] || [];
+                const spent = expenses
+                    .filter(exp => categories.includes(exp.category))
+                    .reduce((sum, exp) => sum + (exp.amount || 0), 0);
+
+                const remaining = Math.max(0, limit.amount - spent);
+
+                labels.push(limit.superCategory);
+                budgetData.push(limit.amount);
+                actualData.push(spent);
+                remainingData.push(remaining);
+
+                totalBudget += limit.amount;
+                totalSpent += spent;
+
+                // Color based on percentage
+                const percentage = (spent / limit.amount) * 100;
+                if (percentage >= 100) {
+                    actualColors.push('#ef4444'); // Red
+                } else if (percentage >= 80) {
+                    actualColors.push('#f59e0b'); // Orange
+                } else {
+                    actualColors.push('#10b981'); // Green
+                }
+            });
+
+            // Calculate total leftover
+            const totalLeftover = totalBudget - totalSpent;
+            const leftoverPercentage = totalBudget > 0 ? ((totalLeftover / totalBudget) * 100).toFixed(1) : 0;
+
+            // Update badge with total leftover
+            const badgeColor = totalLeftover >= 0 ? '#10b981' : '#ef4444';
+            document.getElementById('budgetChartBadge').innerHTML = `
+                Total Leftover: <span style="color: ${badgeColor}; font-weight: 800;">
+                    ₹${totalLeftover.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </span> (${leftoverPercentage}%)
+            `;
+
+            // Destroy existing chart if it exists
+            if (budgetBarChart) {
+                budgetBarChart.destroy();
+                budgetBarChart = null;
+            }
+
+            const ctx = document.getElementById('budgetBarChart').getContext('2d');
+
+            budgetBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Budget Limit',
+                            data: budgetData,
+                            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                            borderColor: '#667eea',
+                            borderWidth: 2,
+                            borderRadius: 8,
+                        },
+                        {
+                            label: 'Actual Spending',
+                            data: actualData,
+                            backgroundColor: actualColors,
+                            borderColor: actualColors,
+                            borderWidth: 2,
+                            borderRadius: 8,
+                        },
+                        {
+                            label: 'Remaining Budget',
+                            data: remainingData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.3)',
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            borderDash: [5, 5],
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 13,
+                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                                    weight: '600'
+                                },
+                                usePointStyle: true,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleFont: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.x || 0;
+                                    return `${label}: ₹${value.toLocaleString('en-IN', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}`;
+                                },
+                                afterLabel: function(context) {
+                                    const dataIndex = context.dataIndex;
+                                    const budget = budgetData[dataIndex];
+                                    const actual = actualData[dataIndex];
+                                    const remaining = remainingData[dataIndex];
+
+                                    if (context.datasetIndex === 1) {
+                                        const percentage = ((actual / budget) * 100).toFixed(1);
+                                        return `${percentage}% of budget`;
+                                    } else if (context.datasetIndex === 2) {
+                                        const percentage = ((remaining / budget) * 100).toFixed(1);
+                                        return `${percentage}% remaining`;
+                                    }
+                                    return '';
+                                },
+                                footer: function(tooltipItems) {
+                                    if (tooltipItems.length > 0) {
+                                        const dataIndex = tooltipItems[0].dataIndex;
+                                        const budget = budgetData[dataIndex];
+                                        const actual = actualData[dataIndex];
+                                        const diff = budget - actual;
+
+                                        if (diff >= 0) {
+                                            return `Net: +₹${diff.toLocaleString('en-IN', {minimumFractionDigits: 2})} under budget`;
+                                        } else {
+                                            return `Net: -₹${Math.abs(diff).toLocaleString('en-IN', {minimumFractionDigits: 2})} over budget`;
+                                        }
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount (₹)',
+                                font: { size: 13, weight: '500' },
+                                color: '#4a5568'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#718096',
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Categories',
+                                font: { size: 13, weight: '500' },
+                                color: '#4a5568'
+                            },
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { size: 12, weight: '600' },
+                                color: '#1e293b'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'y'
+                    }
+                }
+            });
+
+            console.log('Budget bar chart drawn with', labels.length, 'categories');
+            console.log('Total Budget:', totalBudget, 'Total Spent:', totalSpent, 'Total Leftover:', totalLeftover);
+
+        } catch (error) {
+            console.error('Error drawing budget chart:', error);
+            if (budgetBarChart) {
+                budgetBarChart.destroy();
+                budgetBarChart = null;
+            }
+            chartWrapper.innerHTML = `
+                <div class="empty-state">
+                    <h3>Failed to Load Chart</h3>
+                    <p>${error.message}</p>
+                </div>
+            `;
+            document.getElementById('budgetChartBadge').textContent = 'Error';
+        }
+    }
+
+    // Draw line chart
+    async function drawLineChart(data) {
         data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         const labels = [];
@@ -438,28 +1460,30 @@
             cumulativeAmounts.push(total);
         });
 
-        // Update total display
         document.getElementById('totalExpense').textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-        if (chart) chart.destroy();
+        if (lineChart) {
+            lineChart.destroy();
+            lineChart = null;
+        }
 
-        const chartWrapper = document.getElementById('chartWrapper');
+        const chartWrapper = document.getElementById('lineChartWrapper');
 
         if (data.length === 0) {
             chartWrapper.innerHTML = `
                 <div class="empty-state">
                     <h3>No Expenses Found</h3>
-                    <p>Try adjusting your filters or add some expenses to get started.</p>
+                    <p>Try adjusting your filters or add some expenses.</p>
                 </div>
             `;
             return;
         } else {
-            chartWrapper.innerHTML = '<canvas id="expensesChart"></canvas>';
+            chartWrapper.innerHTML = '<canvas id="expensesLineChart"></canvas>';
         }
 
-        const newCtx = document.getElementById('expensesChart').getContext('2d');
+        const lineCtx = document.getElementById('expensesLineChart').getContext('2d');
 
-        chart = new Chart(newCtx, {
+        lineChart = new Chart(lineCtx, {
             type: 'line',
             data: {
                 labels: labels,
@@ -573,31 +1597,171 @@
                 }
             }
         });
+
+        console.log('Line chart drawn with', data.length, 'data points');
     }
 
-    // Reset filters to calculated date range
+    // Draw pie chart
+    async function drawPieChart(data) {
+        const pieWrapper = document.getElementById('pieChartWrapper');
+
+        if (!data || data.length === 0) {
+            pieWrapper.innerHTML = `
+                <div class="empty-state">
+                    <h3>No Categories Found</h3>
+                    <p>Add expenses to see category breakdown.</p>
+                </div>
+            `;
+            document.getElementById('categoryCount').textContent = '0 Categories';
+            return;
+        }
+
+        pieWrapper.innerHTML = '<canvas id="expensesPieChart"></canvas>';
+
+        const categories = data.map(item => item.category);
+        const amounts = data.map(item => item.totalAmount);
+        const total = amounts.reduce((sum, amount) => sum + amount, 0);
+
+        document.getElementById('categoryCount').textContent = `${categories.length} Categories`;
+
+        const colors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+            '#9966FF', '#FF9F40', '#E7E9ED', '#4CAF50',
+            '#FF5722', '#2196F3', '#FFC107', '#9C27B0'
+        ];
+
+        if (pieChart) {
+            pieChart.destroy();
+            pieChart = null;
+        }
+
+        const pieCtx = document.getElementById('expensesPieChart').getContext('2d');
+
+        pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: categories,
+                datasets: [{
+                    label: 'Expenses',
+                    data: amounts,
+                    backgroundColor: colors.slice(0, categories.length),
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            },
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => {
+                                    const value = data.datasets[0].data[i];
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return {
+                                        text: `${label}: ${percentage}%`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        hidden: false,
+                                        index: i
+                                    };
+                                });
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ₹${value.toLocaleString('en-IN')} (${percentage}%)`;
+                            }
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true
+                }
+            }
+        });
+
+        console.log('Pie chart drawn with', categories.length, 'categories');
+    }
+
+    // Update entire dashboard
+    async function updateDashboard() {
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        const category = document.getElementById('categoryFilter').value;
+
+        console.log('Updating dashboard with filters:', { start, end, category });
+
+        showLoading();
+
+        try {
+            // Fetch all datasets in parallel
+            const [expensesData, categorySummary, expensesListData] = await Promise.all([
+                fetchExpenses(start, end, category),
+                fetchCategorySummary(start, end),
+                fetchExpensesList(start, end)
+            ]);
+
+            console.log('Fetched data - Expenses:', expensesData.length, 'Categories:', categorySummary.length, 'List:', expensesListData.length);
+
+            // Update all displays in parallel
+            await Promise.all([
+                updateFinancialOverview(start, end),
+                drawLineChart(expensesData),
+                drawPieChart(categorySummary),
+                drawExpenseTypePieChart(expensesListData),
+                drawBudgetChart()
+            ]);
+
+            console.log('Dashboard updated successfully');
+        } catch (error) {
+            console.error('Error updating dashboard:', error);
+            showError('Failed to update dashboard: ' + error.message);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Reset filters
     function resetFilters() {
+        console.log('Resetting filters to current month range');
         const { startDate, endDate } = getCurrentMonthRange();
         document.getElementById('startDate').value = startDate;
         document.getElementById('endDate').value = endDate;
         document.getElementById('categoryFilter').value = '';
-        fetchExpenses(startDate, endDate).then(drawChart);
+        updateDashboard();
     }
 
-    // Initial load - set dates using conditional logic
+    // Initial load
+    console.log('Initializing dashboard...');
     const { startDate, endDate } = getCurrentMonthRange();
+    console.log('Initial date range:', { startDate, endDate });
     document.getElementById('startDate').value = startDate;
     document.getElementById('endDate').value = endDate;
-    fetchExpenses(startDate, endDate).then(drawChart);
-
-    // Update chart with filters
-    function updateChart() {
-        const start = document.getElementById('startDate').value;
-        const end = document.getElementById('endDate').value;
-        const category = document.getElementById('categoryFilter').value;
-        fetchExpenses(start, end, category).then(drawChart);
-    }
+    updateDashboard();
 </script>
+
 
 </body>
 </html>
