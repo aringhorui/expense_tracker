@@ -1,0 +1,16 @@
+Getting Dump
+pg_dump -U root -W -F p -d expense_tracker -f /Users/aringhorui/Downloads/expense_tracker_backup.sql
+
+Upload the Dump to github
+Download the Dump from github
+
+Openterminal
+psql -U root -W -d postgres
+DROP DATABASE expense_tracker;
+CREATE DATABASE expense_tracker;
+\q
+psql -U root -W -d expense_tracker -f /Users/aringhorui/Downloads/expense_tracker.sql
+
+
+psql -U root -W -d expense_tracker
+\c expense_tracker
