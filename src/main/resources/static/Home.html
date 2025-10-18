@@ -294,10 +294,18 @@
             margin-top: 8px;
         }
 
-        /* Charts Grid with Staggered Animation */
-        .charts-grid {
+        /* Pie Charts Grid - Two Columns */
+        .pie-charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Full Width Charts Grid */
+        .full-width-charts {
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 25px;
             margin-bottom: 30px;
         }
@@ -314,9 +322,10 @@
             animation: fadeInUp 0.6s ease-out both;
         }
 
-        .chart-card:nth-child(1) { animation-delay: 0.2s; }
-        .chart-card:nth-child(2) { animation-delay: 0.3s; }
-        .chart-card:nth-child(3) { animation-delay: 0.4s; }
+        .pie-charts-grid .chart-card:nth-child(1) { animation-delay: 0.2s; }
+        .pie-charts-grid .chart-card:nth-child(2) { animation-delay: 0.3s; }
+        .full-width-charts .chart-card:nth-child(1) { animation-delay: 0.4s; }
+        .full-width-charts .chart-card:nth-child(2) { animation-delay: 0.5s; }
 
         .chart-card:hover {
             transform: translateY(-8px);
@@ -545,7 +554,7 @@
 
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .charts-grid {
+            .pie-charts-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -595,6 +604,10 @@
             .filter-card {
                 padding: 24px;
             }
+
+            .pie-charts-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Scroll Animation */
@@ -627,9 +640,7 @@
             <p id="userEmail"></p>
         </div>
         <div class="action-buttons">
-            <!--<button class="btn-primary" onclick="goToLogExpense()">➕ Log Expense</button>-->
             <button class="btn-secondary" onclick="goToExpenses()">📊 View Expenses</button>
-            <!--<button class="btn-secondary" onclick="goToAddIncome()">💰 Add Income</button>-->
             <button class="btn-secondary" onclick="goToViewIncome()">👀 View Incomes</button>
             <button class="btn-logout" onclick="logout()">🚪 Logout</button>
         </div>
@@ -660,8 +671,8 @@
         </div>
     </div>
 
-
-
+    <!-- Pie Charts Grid (Two Columns) -->
+    <div class="pie-charts-grid">
         <!-- Expense Type Pie Chart -->
         <div class="chart-card">
             <div class="chart-header">
@@ -683,22 +694,23 @@
                 <canvas id="expensesPieChart"></canvas>
             </div>
         </div>
+    </div>
 
-        <!-- Charts Grid -->
-        <div class="charts-grid">
-            <!-- Line Chart -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h2>📈 Expense Trends</h2>
-                    <span class="total-badge" id="totalExpense">₹0</span>
-                </div>
-                <div class="chart-container" id="lineChartWrapper">
-                    <canvas id="expensesLineChart"></canvas>
-                </div>
+    <!-- Full Width Charts -->
+    <div class="full-width-charts">
+        <!-- Line Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2>📈 Expense Trends</h2>
+                <span class="total-badge" id="totalExpense">₹0</span>
+            </div>
+            <div class="chart-container" id="lineChartWrapper">
+                <canvas id="expensesLineChart"></canvas>
+            </div>
         </div>
 
         <!-- Budget vs Actual Bar Chart -->
-        <div class="chart-card" style="grid-column: 1 / -1;">
+        <div class="chart-card">
             <div class="chart-header">
                 <h2>📊 Budget vs Actual Spending</h2>
                 <span class="total-badge" id="budgetChartBadge">Loading...</span>
@@ -707,9 +719,6 @@
                 <canvas id="budgetBarChart"></canvas>
             </div>
         </div>
-
-
-
     </div>
 
     <!-- Filters -->
